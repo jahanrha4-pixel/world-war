@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+<title>🪖🚀 Word War 🚀🪖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===================== صفحه انتخاب کشور ===================== -->
+<section id="screen-select" class="screen active">
+  <div class="select-wrap">
+    <h1 class="logo">🪖🚀 WORD WAR 🚀🪖</h1>
+    <p class="tagline">کشور خود را برای فرمان‌دهی انتخاب کن</p>
+
+    <div id="continue-box" class="continue-box hidden">
+      <p>یک بازی ذخیره‌شده پیدا شد.</p>
+      <div class="row gap">
+        <button id="btn-continue" class="btn btn-primary">🔄 ادامه بازی</button>
+        <button id="btn-newgame" class="btn btn-ghost">🆕 بازی جدید</button>
+      </div>
+    </div>
+
+    <div id="country-pick-grid" class="country-pick-grid"></div>
+  </div>
+</section>
+
+<!-- ===================== صفحه اصلی بازی ===================== -->
+<section id="screen-game" class="screen">
+
+  <!-- نوار بالا: منابع و اطلاعات کشور -->
+  <header class="topbar">
+    <div class="player-badge" id="player-badge">
+      <span class="flag" id="pb-flag">🏳️</span>
+      <span class="name" id="pb-name">—</span>
+      <span class="status-dot" id="pb-status"></span>
+    </div>
+    <div class="resource-ticker" id="resource-ticker"></div>
+    <button id="btn-menu" class="icon-btn" title="منو">☰</button>
+  </header>
+
+  <!-- نقشه جهان -->
+  <main class="map-area">
+    <div class="map-legend">
+      <span><i class="dot green"></i> صلح</span>
+      <span><i class="dot yellow"></i> تنش</span>
+      <span><i class="dot red"></i> جنگ</span>
+      <span><i class="dot blue"></i> اتحاد</span>
+      <span><i class="dot black"></i> اشغال</span>
+    </div>
+    <div class="world-map" id="world-map">
+      <div class="grid-overlay"></div>
+      <!-- نشانگرهای کشور و تنگه به‌صورت پویا ساخته می‌شوند -->
+    </div>
+  </main>
+
+  <!-- نوار اخبار پایین نقشه -->
+  <div class="news-strip" id="news-strip">
+    <div class="news-strip-track" id="news-strip-track">در انتظار رویدادهای جهانی…</div>
+  </div>
+
+  <!-- منوی پایین -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-panel="panel-map">🗺<span>نقشه</span></button>
+    <button class="nav-btn" data-panel="panel-country">🏛<span>کشور من</span></button>
+    <button class="nav-btn" data-panel="panel-diplomacy">🤝<span>دیپلماسی</span></button>
+    <button class="nav-btn" data-panel="panel-war">⚔️<span>جنگ</span></button>
+    <button class="nav-btn" data-panel="panel-shop">🛒<span>فروشگاه</span></button>
+    <button class="nav-btn" data-panel="panel-news">📰<span>اخبار</span></button>
+    <button class="nav-btn danger" data-panel="panel-shelter">🛡️<span>پناهگاه</span></button>
+  </nav>
+
+  <!-- ===================== پنل‌های Slide-up ===================== -->
+
+  <!-- پنل نقشه (اطلاعات کشور انتخاب‌شده روی نقشه) -->
+  <div class="panel" id="panel-map">
+    <div class="panel-handle"></div>
+    <div class="panel-header"><h2>🗺 اطلاعات نقشه</h2><button class="panel-close">✕</button></div>
+    <div class="panel-body" id="map-info-body">
+      <p class="muted">روی یک کشور یا تنگه در نقشه بزن تا اطلاعاتش را ببینی.</p>
+    </div>
+  </div>
+
+  <!-- پنل کشور من (Dashboard) -->
+  <div class="panel" id="panel-country">
+    <div class="panel-handle"></div>
+    <div class="panel-header"><h2>🏛 پنل کشور</h2><button class="panel-close">✕</button></div>
+    <div class="panel-body">
+      <div class="tabs" id="country-tabs">
+        <button class="tab-btn active" data-tab="tab-economy">💰 اقتصاد</button>
+        <button class="tab-btn" data-tab="tab-military">🪖 نظامی</button>
+        <button class="tab-btn" data-tab="tab-territory">🌍 سرزمین</button>
+        <button class="tab-btn" data-tab="tab-status">🚨 وضعیت</button>
+      </div>
+
+      <div class="tab-content active" id="tab-economy">
+        <div class="stat-grid" id="economy-stats"></div>
+        <h3 class="section-title">📜 تاریخچه خرید</h3>
+        <ul class="log-list" id="purchase-history"></ul>
+      </div>
+
+      <div class="tab-content" id="tab-military">
+        <div class="stat-grid" id="military-stats"></div>
+      </div>
+
+      <div class="tab-content" id="tab-territory">
+        <div class="stat-grid" id="territory-stats"></div>
+      </div>
+
+      <div class="tab-content" id="tab-status">
+        <div class="stat-grid" id="status-stats"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- پنل دیپلماسی (اتحاد + گروه) -->
+  <div class="panel" id="panel-diplomacy">
+    <div class="panel-handle"></div>
+    <div class="panel-header"><h2>🤝 دیپلماسی</h2><button class="panel-close">✕</button></div>
+    <div class="panel-body">
+      <div class="tabs" id="diplo-tabs">
+        <button class="tab-btn active" data-tab="tab-relations">روابط</button>
+        <button class="tab-btn" data-tab="tab-alliance">اتحادها</button>
+        <button class="tab-btn" data-tab="tab-group">گروه بازیکنان</button>
+        <button class="tab-btn" data-tab="tab-statement">بیانیه رسمی</button>
+      </div>
+
+      <div class="tab-content active" id="tab-relations">
+        <h3 class="section-title">وضعیت روابط با کشورها</h3>
+        <div id="relations-list" class="list-block"></div>
+      </div>
+
+      <div class="tab-content" id="tab-alliance">
+        <div id="alliance-current"></div>
+        <button id="btn-create-alliance" class="btn btn-primary block">➕ ساخت اتحاد جدید</button>
+        <h3 class="section-title">اتحادهای فعال جهان</h3>
+        <div id="alliance-list" class="list-block"></div>
+      </div>
+
+      <div class="tab-content" id="tab-group">
+        <div id="group-current"></div>
+        <button id="btn-create-group" class="btn btn-primary block">➕ ساخت گروه بازیکنان</button>
+        <h3 class="section-title">دعوت‌های در انتظار من</h3>
+        <div id="group-invites" class="list-block"></div>
+      </div>
+
+      <div class="tab-content" id="tab-statement">
+        <form id="statement-form" class="form-block">
+          <label>👤 صادرکننده بیانیه
+            <input type="text" id="st-issuer" placeholder="نام رهبر / دولت" required />
+          </label>
+          <label>📝 موضوع بیانیه
+            <input type="text" id="st-subject" placeholder="موضوع" required />
+          </label>
+          <label>🏛 مکان صدور
+            <input type="text" id="st-location" placeholder="شهر" required />
+          </label>
+          <label>📜 متن بیانیه
+            <textarea id="st-body" rows="4" placeholder="متن بیانیه…" required></textarea>
+          </label>
+          <label>🌐 زبان نمایش
+            <select id="st-lang">
+              <option value="fa">فارسی</option>
+              <option value="en">English</option>
+              <option value="ar">العربية</option>
+            </select>
+          </label>
+          <button type="submit" class="btn btn-primary block">📰 انتشار بیانیه</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- پنل جنگ -->
+  <div class="panel" id="panel-war">
+    <div class="panel-handle"></div>
+    <div class="panel-header"><h2>⚔️ سیستم جنگ</h2><button class="panel-close">✕</button></div>
+    <div class="panel-body">
+      <h3 class="section-title">اعلام جنگ / اقدام دیپلماتیک</h3>
+      <div class="row gap wrap">
+        <select id="war-target-select" class="select-inline"></select>
+        <button id="btn-declare-war" class="btn btn-danger">🔴 اعلام جنگ</button>
+        <button id="btn-request-allies" class="btn btn-ghost">📣 درخواست کمک متحدان</button>
+      </div>
+      <h3 class="section-title">جنگ‌های جاری</h3>
+      <div id="war-list" class="list-block"></div>
+      <h3 class="section-title">🌊 تنگه‌ها و مسیرهای دریایی</h3>
+      <div id="strait-list" class="list-block"></div>
+    </div>
+  </div>
+
+  <!-- پنل فروشگاه -->
+  <div class="panel" id="panel-shop">
+    <div class="panel-handle"></div>
+    <div class="panel-header"><h2>🛒 فروشگاه</h2><button class="panel-close">✕</button></div>
+    <div class="panel-body">
+      <div class="tabs" id="shop-tabs">
+        <button class="tab-btn active" data-tab="shop-resources">⛏ منابع</button>
+        <button class="tab-btn" data-tab="shop-equipment">🪖 تجهیزات</button>
+        <button class="tab-btn" data-tab="shop-strategic">🚀 استراتژیک</button>
+      </div>
+      <div class="tab-content active" id="shop-resources"></div>
+      <div class="tab-content" id="shop-equipment"></div>
+      <div class="tab-content" id="shop-strategic"></div>
+    </div>
+  </div>
+
+  <!-- پنل اخبار -->
+  <div class="panel" id="panel-news">
+    <div class="panel-handle"></div>
+    <div class="panel-header"><h2>🌍 WORLD NEWS</h2><button class="panel-close">✕</button></div>
+    <div class="panel-body">
+      <div id="news-full-list" class="list-block"></div>
+    </div>
+  </div>
+
+  <!-- پنل پناهگاه (تمام‌صفحه) -->
+  <div class="panel panel-shelter" id="panel-shelter">
+    <div class="panel-handle"></div>
+    <div class="panel-header"><h2>🛡️ پناهگاه</h2><button class="panel-close">✕</button></div>
+    <div class="panel-body">
+      <div id="shelter-entry" class="shelter-entry">
+        <p>در زمان خطر می‌توانید وارد پناهگاه امن شوید.</p>
+        <button id="btn-enter-shelter" class="btn btn-primary block">🛡️ ورود به پناهگاه</button>
+      </div>
+      <div id="shelter-inside" class="shelter-inside hidden">
+        <div class="safe-banner">✅ شما وارد پناهگاه شدید — وضعیت: <b>🟢 امن</b></div>
+        <h3 class="section-title">وضعیت کشور</h3>
+        <div id="shelter-country-status" class="stat-grid"></div>
+        <h3 class="section-title">🌍 اخبار جهان</h3>
+        <div id="shelter-news" class="list-block"></div>
+        <h3 class="section-title">⚔️ وضعیت جنگ</h3>
+        <div id="shelter-war" class="list-block"></div>
+        <h3 class="section-title">📦 منابع</h3>
+        <div id="shelter-resources" class="stat-grid"></div>
+        <h3 class="section-title">🚨 پیام‌های اضطراری</h3>
+        <div id="shelter-emergency" class="list-block"></div>
+        <h3 class="section-title">🤝 وضعیت متحدان</h3>
+        <div id="shelter-allies" class="list-block"></div>
+        <button id="btn-exit-shelter" class="btn btn-ghost block">⬅️ خروج از پناهگاه</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- پنل منو (ذخیره/جدید) -->
+  <div class="panel" id="panel-menu">
+    <div class="panel-handle"></div>
+    <div class="panel-header"><h2>☰ منو</h2><button class="panel-close">✕</button></div>
+    <div class="panel-body">
+      <button id="btn-save" class="btn btn-primary block">💾 ذخیره بازی</button>
+      <button id="btn-restart" class="btn btn-danger block">🆕 بازی جدید (پاک کردن)</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+</section>
+
+<!-- ===================== مودال‌ها ===================== -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" id="modal-alliance">
+    <h2>➕ ساخت اتحاد</h2>
+    <form id="alliance-form" class="form-block">
+      <label>نام اتحاد <input type="text" id="al-name" required /></label>
+      <label>پرچم / لوگو (یک اموجی)
+        <input type="text" id="al-flag" maxlength="4" placeholder="🛡️" />
+      </label>
+      <label>قوانین اتحاد
+        <textarea id="al-rules" rows="3" placeholder="مثلاً: کمک نظامی متقابل اجباری است."></textarea>
+      </label>
+      <label>دعوت کشورها
+        <div id="al-invite-list" class="checkbox-list"></div>
+      </label>
+      <div class="row gap">
+        <button type="submit" class="btn btn-primary">ساخت اتحاد</button>
+        <button type="button" class="btn btn-ghost modal-cancel">انصراف</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal" id="modal-group">
+    <h2>➕ ساخت گروه بازیکنان</h2>
+    <form id="group-form" class="form-block">
+      <label>نام گروه <input type="text" id="gr-name" required /></label>
+      <label>توضیحات <textarea id="gr-desc" rows="3"></textarea></label>
+      <label>دعوت کشورها (به‌عنوان بازیکن)
+        <div id="gr-invite-list" class="checkbox-list"></div>
+      </label>
+      <div class="row gap">
+        <button type="submit" class="btn btn-primary">ساخت گروه</button>
+        <button type="button" class="btn btn-ghost modal-cancel">انصراف</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal" id="modal-strait">
+    <h2 id="strait-modal-title">🌊 تنگه</h2>
+    <div id="strait-modal-body" class="form-block"></div>
+    <div class="row gap">
+      <button type="button" class="btn btn-ghost modal-cancel">بستن</button>
+    </div>
+  </div>
+</div>
+
+<!-- نوتیفیکیشن جهانی -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script src="data.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
