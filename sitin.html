@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SITIN — Strategic World</title>
+  <link rel="stylesheet" href="sitin.css">
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
+</head>
+<body>
+  <div id="hud">
+    <header class="topbar">
+      <div class="brand"><span class="logo">S</span><div><b>SITIN</b><small>Strategic World</small></div></div>
+      <div class="resources">
+        <div class="res"><span>💰</span><b id="money">1000</b><small>بودجه</small></div>
+        <div class="res"><span>🛢️</span><b id="oil">500</b><small>نفت</small></div>
+        <div class="res"><span>🏭</span><b id="industry">100</b><small>صنعت</small></div>
+      </div>
+      <div class="actions"><button id="saveBtn">ذخیره</button><button id="loadBtn">بارگذاری</button></div>
+    </header>
+
+    <div class="layout">
+      <aside class="panel left">
+        <div class="panel-title">🇸🇮 کشور SITIN <span class="status">● آماده</span></div>
+        <div class="stat-grid">
+          <div><b id="infantry">600</b><small>پیاده‌نظام</small></div>
+          <div><b id="armor">250</b><small>زرهی</small></div>
+          <div><b id="air">100</b><small>هوایی</small></div>
+          <div><b id="navy">50</b><small>دریایی</small></div>
+        </div>
+        <button class="primary" data-action="train">➕ آموزش نیرو <span>$80</span></button>
+        <button data-action="industry">🏭 توسعه صنعت <span>$150</span></button>
+        <button data-action="mission">🎯 مأموریت ملی</button>
+        <div class="mini-news" id="news">خبر: وضعیت جهان آرام است.</div>
+      </aside>
+
+      <main id="game-wrap"><div id="game"></div><div class="map-label">نقشه راهبردی جهان</div></main>
+
+      <aside class="panel right">
+        <div class="panel-title">🌍 کشورها</div>
+        <div id="countries"></div>
+        <hr>
+        <div class="panel-title">⚔️ عملیات</div>
+        <div class="operation" id="operation">یک کشور را روی نقشه انتخاب کن.</div>
+        <button class="danger" id="battleBtn">شروع نبرد</button>
+        <button data-action="deploy">🚩 استقرار نیرو</button>
+      </aside>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+  <script src="sitin.js"></script>
+</body>
+</html>
